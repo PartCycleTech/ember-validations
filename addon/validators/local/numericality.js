@@ -1,18 +1,15 @@
-import Ember from 'ember';
+import { get } from '@ember/object';
+import { isEmpty } from '@ember/utils';
 import jquery from 'jquery';
 import Base from 'ember-validations/validators/base';
 import Messages from 'ember-validations/messages';
 import Patterns from 'ember-validations/patterns';
 
-const { get, isEmpty } = Ember;
 const { inArray } = jquery;
 
 export default Base.extend({
   init() {
-    /*jshint expr:true*/
-    let index;
-    let keys;
-    let key;
+    let index, keys, key;
 
     this._super(...arguments);
 
@@ -41,7 +38,9 @@ export default Base.extend({
       // I have no idea what the hell is going on here. This seems to do nothing.
       // The observer's key is being set to the values in the options hash?
       if (key in this.options && isNaN(prop)) {
-        this.model.addObserver(prop, this, this._validate);
+        if (this.model) {
+          this.model.addObserver(prop, this, this._validate);
+        }
       }
 
       if (prop !== undefined && this.options.messages[key] === undefined) {
@@ -65,9 +64,7 @@ export default Base.extend({
   },
 
   call() {
-    let check;
-    let checkValue;
-    let comparisonResult;
+    let check, checkValue, comparisonResult;
 
     if (isEmpty(get(this.model, this.property))) {
       if (this.options.allowBlank === undefined) {
@@ -75,7 +72,7 @@ export default Base.extend({
       }
     } else if (!Patterns.numericality.test(get(this.model, this.property))) {
       this.errors.pushObject(this.options.messages.numericality);
-    } else if (this.options.onlyInteger === true && !(/^[+\-]?\d+$/.test(get(this.model, this.property)))) {
+    } else if (this.options.onlyInteger === true && !(/^[+-]?\d+$/.test(get(this.model, this.property)))) {
       this.errors.pushObject(this.options.messages.onlyInteger);
     } else if (this.options.odd  && parseInt(get(this.model, this.property), 10) % 2 === 0) {
       this.errors.pushObject(this.options.messages.odd);

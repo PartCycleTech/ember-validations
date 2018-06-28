@@ -1,16 +1,13 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import { set, get } from '@ember/object';
 import Base from 'ember-validations/validators/base';
 import Messages from 'ember-validations/messages';
 
-const { get, isEmpty, set } = Ember;
-
 export default Base.extend({
   init() {
-    let index;
-    let key;
+    let index, key;
 
     this._super(...arguments);
-    /*jshint expr:true*/
     if (typeof this.options === 'number') {
       set(this, 'options', { 'is': this.options });
     }
@@ -22,7 +19,9 @@ export default Base.extend({
     for (index = 0; index < this.messageKeys().length; index++) {
       key = this.messageKeys()[index];
       if (this.options[key] !== undefined && this.options[key].constructor === String) {
-        this.model.addObserver(this.options[key], this, this._validate);
+        if (this.model) {
+          this.model.addObserver(this.options[key], this, this._validate);
+        }
       }
     }
 
@@ -77,8 +76,7 @@ export default Base.extend({
   },
 
   call() {
-    let key;
-    let comparisonResult;
+    let key, comparisonResult;
 
     if (isEmpty(get(this.model, this.property))) {
       if (this.options.allowBlank === undefined && (this.options.is || this.options.minimum)) {

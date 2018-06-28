@@ -1,24 +1,21 @@
-import Ember from 'ember';
-
-const {
-  A: emberArray,
-  Object: EmberObject,
-  RSVP: { reject, resolve },
-  computed: { empty, not },
-  get,
-  on,
-  set
-} = Ember;
+import { A as emberArray } from '@ember/array';
+import { resolve, reject } from 'rsvp';
+import { not, empty } from '@ember/object/computed';
+import { on } from '@ember/object/evented';
+import EmberObject, { set, get } from '@ember/object';
 
 export default EmberObject.extend({
   init() {
+    this._super(...arguments);
     set(this, 'errors', emberArray());
     this.dependentValidationKeys = emberArray();
     this.conditionals = {
       'if': get(this, 'options.if'),
       unless: get(this, 'options.unless')
     };
-    this.model.addObserver(this.property, this, this._validate);
+    if (this.model) {
+      this.model.addObserver(this.property, this, this._validate);
+    }
   },
 
   addObserversForDependentValidationKeys: on('init', function() {
@@ -84,14 +81,14 @@ export default EmberObject.extend({
 
   canValidate() {
     if (typeof this.conditionals === 'object') {
-      if (this.conditionals['if']) {
-        if (typeof this.conditionals['if'] === 'function') {
-          return this.conditionals['if'](this.model, this.property);
-        } else if (typeof this.conditionals['if'] === 'string') {
-          if (typeof this.model[this.conditionals['if']] === 'function') {
-            return this.model[this.conditionals['if']]();
+      if (this.conditionals.if) {
+        if (typeof this.conditionals.if === 'function') {
+          return this.conditionals.if(this.model, this.property);
+        } else if (typeof this.conditionals.if === 'string') {
+          if (typeof this.model[this.conditionals.if] === 'function') {
+            return this.model[this.conditionals.if]();
           } else {
-            return get(this.model, this.conditionals['if']);
+            return get(this.model, this.conditionals.if);
           }
         }
       } else if (this.conditionals.unless) {

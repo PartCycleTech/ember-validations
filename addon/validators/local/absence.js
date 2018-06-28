@@ -1,13 +1,11 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { set, get } from '@ember/object';
 import Base from 'ember-validations/validators/base';
 import Messages from 'ember-validations/messages';
-
-const { get, isPresent, set } = Ember;
 
 export default Base.extend({
   init() {
     this._super(...arguments);
-    /*jshint expr:true*/
     if (this.options === true) {
       set(this, 'options', {});
     }
