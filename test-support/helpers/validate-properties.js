@@ -1,15 +1,13 @@
-import Ember from 'ember';
-import { test } from 'ember-qunit';
-
-var run = Ember.run;
+import { run } from '@ember/runloop';
+import { test, dump } from 'qunit';
 
 function validateValues(object, propertyName, values, isTestForValid) {
-  var promise = null;
-  var validatedValues = [];
+  let promise = null;
+  let validatedValues = [];
 
   values.forEach(function(value) {
-    function handleValidation(errors) {
-      var hasErrors = object.get('errors.' + propertyName + '.firstObject');
+    function handleValidation() {
+      let hasErrors = object.get(`errors.${propertyName}.firstObject`);
       if ((hasErrors && !isTestForValid) || (!hasErrors && isTestForValid)) {
         validatedValues.push(value);
       }
@@ -17,7 +15,7 @@ function validateValues(object, propertyName, values, isTestForValid) {
 
     run(object, 'set', propertyName, value);
 
-    var objectPromise = null;
+    let objectPromise = null;
     run(function() {
       objectPromise = object.validate().then(handleValidation, handleValidation);
     });
@@ -34,11 +32,11 @@ function validateValues(object, propertyName, values, isTestForValid) {
 }
 
 function testPropertyValues(propertyName, values, isTestForValid, context) {
-  var validOrInvalid = (isTestForValid ? 'Valid' : 'Invalid');
-  var testName = validOrInvalid + ' ' + propertyName;
+  let validOrInvalid = (isTestForValid ? 'Valid' : 'Invalid');
+  let testName = `${validOrInvalid} ${propertyName}`;
 
   test(testName, function(assert) {
-    var object = this.subject();
+    let object = this.subject();
 
     if (context && typeof context === 'function') {
       context(object);
@@ -46,9 +44,8 @@ function testPropertyValues(propertyName, values, isTestForValid, context) {
 
     // Use QUnit.dump.parse so null and undefined can be printed as literal 'null' and
     // 'undefined' strings in the assert message.
-    var valuesString = QUnit.dump.parse(values).replace(/\n(\s+)?/g, '').replace(/,/g, ', ');
-    var assertMessage = 'Expected ' + propertyName + ' to have ' + validOrInvalid.toLowerCase() +
-      ' values: ' + valuesString;
+    let valuesString = dump.parse(values).replace(/\n(\s+)?/g, '').replace(/,/g, ', ');
+    let assertMessage = `Expected ${propertyName} to have ${validOrInvalid.toLowerCase()} values: ${valuesString}`;
 
     return validateValues(object, propertyName, values, isTestForValid)
       .then(function(validatedValues) {

@@ -1,16 +1,11 @@
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import EmberObject, { set, get } from '@ember/object';
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import Mixin from 'ember-validations/mixin';
 
-let user;
-let User;
-
-const {
-  Object: EmberObject,
-  get,
-  run,
-  set
-} = Ember;
+let user, User;
 
 moduleFor('object:user', 'Errors test', {
   integration: true,
@@ -32,8 +27,9 @@ moduleFor('object:user', 'Errors test', {
   },
 
   afterEach() {
-    // jscs:disable disallowDirectPropertyAccess
+    /* eslint-disable */
     delete Ember.I18n;
+    /* eslint-enable */
   }
 });
 
@@ -47,8 +43,8 @@ test('validations are run on instantiation - invalid', function(assert) {
 test('validations are run on instantiation - valid', function(assert) {
   run(() => user = this.subject({ name: 'Brian', age: 33 }));
   assert.ok(get(user, 'isValid'));
-  assert.ok(Ember.isEmpty(get(user, 'errors.name')));
-  assert.ok(Ember.isEmpty(get(user, 'errors.age')));
+  assert.ok(isEmpty(get(user, 'errors.name')));
+  assert.ok(isEmpty(get(user, 'errors.age')));
 });
 
 test('when errors are resolved', function(assert) {
@@ -59,16 +55,16 @@ test('when errors are resolved', function(assert) {
 
   run(() => set(user, 'name', 'Brian'));
   assert.equal(get(user, 'isValid'), false);
-  assert.ok(Ember.isEmpty(get(user, 'errors.name')));
+  assert.ok(isEmpty(get(user, 'errors.name')));
   assert.deepEqual(get(user, 'errors.age'), ["can't be blank", 'is not a number']);
 
   run(() => set(user, 'age', 'thirty three'));
   assert.equal(get(user, 'isValid'), false);
-  assert.ok(Ember.isEmpty(get(user, 'errors.name')));
+  assert.ok(isEmpty(get(user, 'errors.name')));
   assert.deepEqual(get(user, 'errors.age'), ['is not a number']);
 
   run(() => set(user, 'age', 33));
   assert.ok(get(user, 'isValid'));
-  assert.ok(Ember.isEmpty(get(user, 'errors.name')));
-  assert.ok(Ember.isEmpty(get(user, 'errors.age')));
+  assert.ok(isEmpty(get(user, 'errors.name')));
+  assert.ok(isEmpty(get(user, 'errors.age')));
 });

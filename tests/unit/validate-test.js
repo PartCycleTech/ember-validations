@@ -1,24 +1,19 @@
+import { A as emberArray } from '@ember/array';
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import EmberObject, { set, get } from '@ember/object';
+import { setOwner, getOwner } from '@ember/application';
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 import EmberValidations, { validator } from 'ember-validations';
 import Base from 'ember-validations/validators/base';
 
-let user;
-let User;
-let promise;
+let Profile, profile, user, User, promise;
 
 const {
-  A: emberArray,
   ArrayController,
   K,
-  Object: EmberObject,
-  ObjectController,
-  get,
-  getOwner,
-  isEmpty,
-  run,
-  set,
-  setOwner
+  ObjectController
 } = Ember;
 
 moduleFor('object:user', 'Validate test', {
@@ -98,9 +93,7 @@ test('it can be mixed into an Ember Object', function(assert) {
 
 if (ObjectController) {
   test('can be mixed into an controller', function(assert) {
-    let Controller;
-    let controller;
-    let user;
+    let Controller, controller, user;
 
     Controller = ObjectController.extend(EmberValidations, {
       validations: {
@@ -130,10 +123,7 @@ if (ObjectController && ArrayController) {
   });
 
   test('can be mixed into an array controller', function(assert) {
-    let Controller;
-    let controller;
-    let user;
-    let UserController;
+    let Controller, controller, user, UserController;
 
     UserController = ObjectController.extend(EmberValidations, {
       validations: {
@@ -171,9 +161,6 @@ if (ObjectController && ArrayController) {
     assert.equal(get(controller, 'isValid'), true);
   });
 }
-
-let Profile;
-let profile;
 
 moduleFor('object:profile', 'Relationship validators', {
   integration: true,
@@ -218,8 +205,7 @@ test('validates other validatable property', function(assert) {
 });
 
 test('validates array of validable objects', function(assert) {
-  let friend1;
-  let friend2;
+  let friend1, friend2;
 
   run(() => {
     user = this.factory('object:user').create({
@@ -281,8 +267,7 @@ test('validates array of validable objects', function(assert) {
 });
 
 test('revalidates arrays when they are replaced', function(assert) {
-  let friend1;
-  let friend2;
+  let friend1, friend2;
 
   run(() => {
     user = this.factory('object:user').create({

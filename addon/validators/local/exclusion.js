@@ -1,9 +1,9 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import { set, get } from '@ember/object';
 import jquery from 'jquery';
 import Base from 'ember-validations/validators/base';
 import Messages from 'ember-validations/messages';
 
-const { get, isEmpty, set } = Ember;
 const { inArray } = jquery;
 
 export default Base.extend({
@@ -18,16 +18,14 @@ export default Base.extend({
     }
   },
   call() {
-    /*jshint expr:true*/
-    let lower;
-    let upper;
+    let lower, upper;
 
     if (isEmpty(get(this.model, this.property))) {
       if (this.options.allowBlank === undefined) {
         this.errors.pushObject(this.options.message);
       }
-    } else if (this.options['in']) {
-      if (inArray(get(this.model, this.property), this.options['in']) !== -1) {
+    } else if (this.options.in) {
+      if (inArray(get(this.model, this.property), this.options.in) !== -1) {
         this.errors.pushObject(this.options.message);
       }
     } else if (this.options.range) {

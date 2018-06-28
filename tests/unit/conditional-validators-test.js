@@ -1,18 +1,10 @@
-import Ember from 'ember';
+import { isEmpty } from '@ember/utils';
+import { run } from '@ember/runloop';
+import EmberObject, { set, get } from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 import Mixin from 'ember-validations/mixin';
 
-let user;
-let User;
-let promise;
-
-const {
-  Object: EmberObject,
-  get,
-  isEmpty,
-  run,
-  set
-} = Ember;
+let user, User, promise;
 
 moduleFor('object:user', 'Conditional Validations', {
   integration: true,

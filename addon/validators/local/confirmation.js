@@ -1,8 +1,7 @@
-import Ember from 'ember';
+import { isPresent } from '@ember/utils';
+import { set, get } from '@ember/object';
 import Base from 'ember-validations/validators/base';
 import Messages from 'ember-validations/messages';
-
-const { get, isPresent, set } = Ember;
 
 export default Base.extend({
   init() {
@@ -10,7 +9,6 @@ export default Base.extend({
     this.property = `${this.property}Confirmation`;
     this._super(...arguments);
     this.dependentValidationKeys.pushObject(this.originalProperty);
-    /*jshint expr:true*/
     if (this.options === true) {
       set(this, 'options', { attribute: this.originalProperty });
       set(this, 'options', { message: Messages.render('confirmation', this.options) });
