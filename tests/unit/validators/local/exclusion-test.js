@@ -9,9 +9,12 @@ let model, Model, options, validator;
 
 module('Exclusion Validator', function(hooks) {
   setupTest(hooks);
-  Model =  EmberObject.extend(Mixin);
-  run(function() {
-    model = Model.create();
+
+  hooks.beforeEach(function() {
+    Model =  EmberObject.extend(Mixin);
+    run(function() {
+      model = Model.create();
+    });
   });
 
   test('when value is not in the list', function(assert) {

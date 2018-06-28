@@ -10,9 +10,11 @@ let model, Model, options, validator;
 module('Length Validator', function(hooks) {
   setupTest(hooks);
 
-  Model = EmberObject.extend(Mixin);
-  run(function() {
-    model = Model.create();
+  hooks.beforeEach(function() {
+    Model = EmberObject.extend(Mixin);
+    run(function() {
+      model = Model.create();
+    });
   });
 
   test('when allowed length is 3 and value length is 3', function(assert) {

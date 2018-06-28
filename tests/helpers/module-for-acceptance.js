@@ -1,21 +1,20 @@
 import { module } from 'qunit';
 import { resolve } from 'rsvp';
-import startApp from '../helpers/start-app';
 import destroyApp from '../helpers/destroy-app';
+import { setupApplicationTest } from 'ember-qunit';
 
 export default function(name, options = {}) {
-  module(name, {
-    beforeEach() {
-      this.application = startApp();
-
+  module(name, function(hooks) {
+    setupApplicationTest();
+    hooks.beforeEach(function() {
       if (options.beforeEach) {
         return options.beforeEach.call(this, ...arguments);
       }
-    },
+    });
 
-    afterEach() {
+    hooks.afterEach(function() {
       let afterEach = options.afterEach && options.afterEach(...arguments);
       return resolve(afterEach).then(() => destroyApp(this.application));
-    }
+    });
   });
 }

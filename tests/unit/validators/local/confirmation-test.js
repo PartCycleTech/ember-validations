@@ -6,14 +6,24 @@ import { setupTest } from 'ember-qunit';
 import Confirmation from 'ember-validations/validators/local/confirmation';
 import Mixin from 'ember-validations/mixin';
 
-let model, Model, options, validator;
+let model, Model, OtherModel, options, validator;
 
 module('Confirmation Validator', function(hooks) {
   setupTest(hooks);
 
-  Model = EmberObject.extend(Mixin);
-  this.registry.register('object:model', Model);
-  run(() => model = this.owner.lookup('object:model'));
+  hooks.beforeEach(function() {
+    Model = EmberObject.extend(Mixin);
+    OtherModel = EmberObject.extend(Mixin, {
+      validations: {
+        attribute: {
+          confirmation: true
+        }
+      }
+    });
+    this.owner.register('object:model', Model);
+    this.owner.register('model:other', OtherModel);
+    run(() => model = this.owner.lookup('object:model'));
+  });
 
   test('when values match', function(assert) {
     options = { message: 'failed validation' };
@@ -69,17 +79,8 @@ module('Confirmation Validator', function(hooks) {
 
   test('message integration on model, prints message on Confirmation property', function(assert) {
     let otherModel;
-    let OtherModel = this.container.lookupFactory('object:model').extend({
-      validations: {
-        attribute: {
-          confirmation: true
-        }
-      }
-    });
 
-    this.registry.register('model:other', OtherModel);
-
-    run(() => otherModel = this.container.lookupFactory('model:other').create());
+    run(() => otherModel = this.owner.factoryFor('model:other').create());
     run(() => set(otherModel, 'attribute', 'test'));
 
     assert.deepEqual(get(otherModel, 'errors.attributeConfirmation'), ["doesn't match attribute"]);

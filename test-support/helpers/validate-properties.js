@@ -1,5 +1,5 @@
 import { run } from '@ember/runloop';
-import { test, dump } from 'qunit';
+import QUnit, { test } from 'qunit';
 
 function validateValues(object, propertyName, values, isTestForValid) {
   let promise = null;
@@ -36,7 +36,7 @@ function testPropertyValues(propertyName, values, isTestForValid, context) {
   let testName = `${validOrInvalid} ${propertyName}`;
 
   test(testName, function(assert) {
-    let object = this.subject();
+    let object =  this.owner.lookup('controller:foo');
 
     if (context && typeof context === 'function') {
       context(object);
@@ -44,7 +44,7 @@ function testPropertyValues(propertyName, values, isTestForValid, context) {
 
     // Use QUnit.dump.parse so null and undefined can be printed as literal 'null' and
     // 'undefined' strings in the assert message.
-    let valuesString = dump.parse(values).replace(/\n(\s+)?/g, '').replace(/,/g, ', ');
+    let valuesString = QUnit.dump.parse(values).replace(/\n(\s+)?/g, '').replace(/,/g, ', ');
     let assertMessage = `Expected ${propertyName} to have ${validOrInvalid.toLowerCase()} values: ${valuesString}`;
 
     return validateValues(object, propertyName, values, isTestForValid)

@@ -9,9 +9,12 @@ let model, Model, options, validator;
 
 module('Numericality Validator', function(hooks) {
   setupTest(hooks);
-  Model =  EmberObject.extend(Mixin);
-  run(function() {
-    model = Model.create();
+
+  hooks.beforeEach(function() {
+    Model =  EmberObject.extend(Mixin);
+    run(function() {
+      model = Model.create();
+    });
   });
 
   test('when value is a number', function(assert) {

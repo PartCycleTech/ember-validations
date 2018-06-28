@@ -8,11 +8,14 @@ let model, Model, options, validator;
 
 module('Acceptance Validator', function(hooks) {
   setupTest(hooks);
-  Model = EmberObject.extend({
-    dependentValidationKeys: {}
-  });
-  run(function() {
-    model = Model.create();
+
+  hooks.beforeEach(function() {
+    Model = EmberObject.extend({
+      dependentValidationKeys: {}
+    });
+    run(function() {
+      model = Model.create();
+    });
   });
 
   test('when attribute is true', function(assert) {

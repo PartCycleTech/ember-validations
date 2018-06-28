@@ -1,13 +1,11 @@
-import {
-  moduleFor,
-  test
-} from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupTest } from 'ember-qunit';
 
-moduleFor('controller:foo', 'Controller sanity test', {
-  integration: true
-});
+module('Controller sanity test', function(hooks) {
+  setupTest(hooks);
 
-test('does not blow up', function(assert) {
-  let controller = this.subject();
-  assert.ok(controller);
+  test('does not blow up', function(assert) {
+    let controller = this.owner.lookup('controller:foo');
+    assert.ok(controller);
+  });
 });
